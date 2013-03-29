@@ -31,8 +31,8 @@ m_find_value(Operation, #m{value=TableName}=M, _Context) ->
 
 %% @doc Transform a m_config value to a list, used for template loops
 %% @spec m_to_list(Source, Context) -> List
-m_to_list(_, _Context) ->
-    [].
+m_to_list(#m{value={list, TableName}}, Context) ->
+    list(TableName, Context).
 
 %% @doc Transform a model value so that it can be formatted or piped through filters
 %% @spec m_value(Source, Context) -> term()
@@ -47,7 +47,7 @@ insert(TableName, Key, Value, Context) ->
 lookup(TableName, Key, Context) ->
     T = ensure_table(TableName, Context),
     case dets:lookup(T, Key) of
-        [Value] -> Value;
+        [{Key, Value}] -> Value;
         [] -> undefined
     end.
 
